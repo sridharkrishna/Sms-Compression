@@ -1,2 +1,2 @@
 # Sms-Compression
-Java version Indic language compression
+Java version of Indic language compression 
