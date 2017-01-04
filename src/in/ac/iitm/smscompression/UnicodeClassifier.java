@@ -1,5 +1,5 @@
 /**************************************************************************************************************
- Copyright (c) 2017 Prof. Devendra Jalihal & Sridhar Ananthakrishnan
+Copyright (c) 2017 Prof. Devendra Jalihal & Sridhar Ananthakrishnan
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,29 +20,43 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ************************************************************************************************************/
 
-package in.ac.iitm.smscompression.model;
+package in.ac.iitm.smscompression;
 
-import java.util.List;
+@Deprecated
+public class UnicodeClassifier {
+	
+	char[] symbols	 	= null;
+	char[] vowels		= null;
+	char[] consonants 	= null;
+	char[] splCons		= null;
+	char[] matras		= null;
+	char[] splMatra		= null;
+	char[] halanth		= null;
+	char[] numbers		= null;
 
-public class ClusterTable {
-	
-	private char baseKeyUnicode;
-	private List<ClusterKeyValue> keyValuePairs;
-	
-	
-	public char getBaseKeyUnicode() {
-		return baseKeyUnicode;
+	// Tamil
+	public UnicodeClassifier(char[] sym, char[] vow, char[] cons, char[] matr, char[] hala, char[] num) {
+		this.symbols		= sym;
+		this.vowels			= vow;
+		this.consonants		= cons;
+		this.matras			= matr;
+		this.halanth		= hala;
+		this.numbers		= num;		
 	}
 	
-	public void setBaseKeyUnicode(char baseKeyUnicode) {
-		this.baseKeyUnicode = baseKeyUnicode;
+	
+	// Hindi
+	public UnicodeClassifier(char[] sym, char[] vow, char[] cons, char[] splcons, char[] matr, char[] splmatr, char[] hala, char[] num) {
+		this.symbols	= sym;
+		this.vowels		= vow;
+		this.consonants	= cons;
+		this.splCons	= splcons;
+		this.matras		= matr;
+		this.splMatra	= splmatr;
+		this.halanth	= hala;
+		this.numbers	= num;
 	}
 	
-	public List<ClusterKeyValue> getKeyValuePairs() {
-		return keyValuePairs;
-	}
 	
-	public void setKeyValuePairs(List<ClusterKeyValue> keyValuePairs) {
-		this.keyValuePairs = keyValuePairs;
-	}
+
 }
