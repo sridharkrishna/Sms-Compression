@@ -20,13 +20,28 @@
 	SOFTWARE.
  ************************************************************************************************************/
 
-package ac.in.iitm.smscompression;
+package in.ac.iitm.smscompression.model;
 
-public class Test {
+public class ClusterKeyValue {
+	
+	private String Key;
+	
+	private String Value;
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public String getKey() {
+		return Key;
+	}
 
+	public void setKey(String key) {
+		Key = key;
+	}
+
+	public String getValue() {
+		return Value;
+	}
+
+	public void setValue(String value) {
+		Value = value;
 	}
 
 }
