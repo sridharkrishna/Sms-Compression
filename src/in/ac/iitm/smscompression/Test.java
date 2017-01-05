@@ -21,11 +21,70 @@ SOFTWARE.
 ************************************************************************************************************/
 package in.ac.iitm.smscompression;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonBuilderFactory;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonStructure;
+import javax.json.JsonValue;
+import javax.json.JsonValue.ValueType;
+
+import org.glassfish.json.JsonProviderImpl;
+
+import in.ac.iitm.smscompression.model.ClusterKeyValue;
+import in.ac.iitm.smscompression.model.ClusterTable;
+
 public class Test {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		System.out.println("Hello Sms Compression.....!");
 		
+		
+		
+		ClusterTable clust = new ClusterTable();
+		
+		ClusterKeyValue ckv = new ClusterKeyValue();
+		ckv.setKey("த");
+		ckv.setValue("000110");
+		
+		
+		List<ClusterKeyValue> lkv = new ArrayList<ClusterKeyValue>();
+		
+		lkv.add(ckv);
+		clust.setKeyValuePairs(lkv);
+		
+		clust.setBaseKeyUnicode((char) 0xba4);
+		
+		JsonObjectBuilder jObj = Json.createObjectBuilder();
+		
+		//JsonObjectBuilder baseUnicodeKey = Json.createObjectBuilder();
+		JsonArrayBuilder keyValuePairs = Json.createArrayBuilder();
+		
+		
+		for(ClusterKeyValue keyValue: clust.getKeyValuePairs()) {
+			keyValuePairs.add(Json.createObjectBuilder()
+					.add("Key", keyValue.getKey())
+					.add("Value", keyValue.getValue()));
+		}
+	
+		
+		
+		jObj.add("baseUnicodeKey", (char) clust.getBaseKeyUnicode());
+		jObj.add("keyValuePairs", keyValuePairs.build());
+		
+		JsonObject cluster = jObj.build();
+		
+		System.out.print(cluster);
 	}
 
 }

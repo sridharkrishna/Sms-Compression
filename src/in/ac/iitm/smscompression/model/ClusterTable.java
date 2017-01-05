@@ -26,16 +26,16 @@ import java.util.List;
 
 public class ClusterTable {
 	
-	private char baseKeyUnicode;
+	private char baseUnicodeKey;
 	private List<ClusterKeyValue> keyValuePairs;
 	
 	
 	public char getBaseKeyUnicode() {
-		return baseKeyUnicode;
+		return baseUnicodeKey;
 	}
 	
-	public void setBaseKeyUnicode(char baseKeyUnicode) {
-		this.baseKeyUnicode = baseKeyUnicode;
+	public void setBaseKeyUnicode(char baseUnicodeKey) {
+		this.baseUnicodeKey = baseUnicodeKey;
 	}
 	
 	public List<ClusterKeyValue> getKeyValuePairs() {
