@@ -5,5 +5,7 @@
 	<classpathentry kind="lib" path="/home/sridhar/Downloads/json-simple-1.1.1.jar"/>
 	<classpathentry kind="lib" path="/home/sridhar/Desktop/javax.json-api-1.0.jar"/>
 	<classpathentry kind="lib" path="/home/sridhar/Downloads/javax.json-1.0.4.jar"/>
+	<classpathentry kind="lib" path="/home/sridhar/Desktop/jinq-jpa-1.8.15.jar"/>
+	<classpathentry kind="lib" path="/home/sridhar/Desktop/api-1.8.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

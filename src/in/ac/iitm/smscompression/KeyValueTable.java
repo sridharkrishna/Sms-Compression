@@ -28,9 +28,7 @@ import in.ac.iitm.smscompression.model.*;
 public class KeyValueTable {
 
 	public void add () {
-		ClusterTable clusterTable = new ClusterTable();
 		
-		clusterTable.setBaseKeyUnicode('\u0000');
 		
 	}
 }

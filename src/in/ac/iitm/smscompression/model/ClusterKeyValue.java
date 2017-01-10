@@ -27,6 +27,12 @@ public class ClusterKeyValue {
 	private String Key;
 	
 	private String Value;
+	
+	public ClusterKeyValue(String Key, String Value) {
+		
+		this.Key = Key;
+		this.Value = Value;
+	}
 
 	public String getKey() {
 		return Key;

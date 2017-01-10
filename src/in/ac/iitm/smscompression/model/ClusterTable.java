@@ -26,23 +26,8 @@ import java.util.List;
 
 public class ClusterTable {
 	
-	private char baseUnicodeKey;
-	private List<ClusterKeyValue> keyValuePairs;
+	public char baseUnicodeKey;
+	public List<ClusterKeyValue> keyValuePairs;
 	
 	
-	public char getBaseKeyUnicode() {
-		return baseUnicodeKey;
-	}
-	
-	public void setBaseKeyUnicode(char baseUnicodeKey) {
-		this.baseUnicodeKey = baseUnicodeKey;
-	}
-	
-	public List<ClusterKeyValue> getKeyValuePairs() {
-		return keyValuePairs;
-	}
-	
-	public void setKeyValuePairs(List<ClusterKeyValue> keyValuePairs) {
-		this.keyValuePairs = keyValuePairs;
-	}
 }

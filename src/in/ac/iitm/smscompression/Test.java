@@ -21,12 +21,22 @@ SOFTWARE.
 ************************************************************************************************************/
 package in.ac.iitm.smscompression;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -34,57 +44,109 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonReader;
 import javax.json.JsonStructure;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
+import javax.json.stream.JsonParser;
+import javax.xml.transform.stream.StreamSource;
 
 import org.glassfish.json.JsonProviderImpl;
+import org.jinq.jpa.JinqJPAStreamProvider;
+import org.jinq.jpa.jpqlquery.From;
+import org.jinq.orm.stream.JinqStream;
 
 import in.ac.iitm.smscompression.model.ClusterKeyValue;
+import in.ac.iitm.smscompression.model.ClusterObject;
 import in.ac.iitm.smscompression.model.ClusterTable;
 
 public class Test {
-
-	public static void main(String[] args) {
+	
+	private static final String JSON_FILE="huff_tamil.json";
+	
+	Map<Character, List<ClusterKeyValue>> cTable = new HashMap<Character, List<ClusterKeyValue>>();
+	
+	
+	
+	public void setClusterMap (char baseUnicodeKey, List<ClusterKeyValue> keyValue) {
+		cTable.put(baseUnicodeKey, keyValue);		
+	}
+	
+	public void printMap (char c) {
+		System.out.println(c+ " : " + cTable.get(c));
+		
+		for(ClusterKeyValue kv : cTable.get(c)){
+			System.out.println(c+ " : " + kv.getKey());
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		System.out.println("Hello Sms Compression.....!");
+		HashMap<String, String> KeyValue = new HashMap<String, String>();
 		
+		Map<Character, Map<String, String>> LookUpTable = new HashMap<Character, Map<String, String>>();
 		
+		InputStream fis = new FileInputStream(JSON_FILE);
 		
-		ClusterTable clust = new ClusterTable();
+		Test test = new Test();
 		
-		ClusterKeyValue ckv = new ClusterKeyValue();
-		ckv.setKey("த");
-		ckv.setValue("000110");
+		//create JsonReader object
+		JsonReader jsonReader = Json.createReader(fis);		
+		JsonArray jsonst = jsonReader.readArray();
 		
+		//we can close IO resource and JsonReader now
+		jsonReader.close();
 		
-		List<ClusterKeyValue> lkv = new ArrayList<ClusterKeyValue>();
+		fis.close();
+			
+		ClusterObject[] clusterObjects = new ClusterObject[jsonst.size()];
 		
-		lkv.add(ckv);
-		clust.setKeyValuePairs(lkv);
-		
-		clust.setBaseKeyUnicode((char) 0xba4);
-		
-		JsonObjectBuilder jObj = Json.createObjectBuilder();
-		
-		//JsonObjectBuilder baseUnicodeKey = Json.createObjectBuilder();
-		JsonArrayBuilder keyValuePairs = Json.createArrayBuilder();
-		
-		
-		for(ClusterKeyValue keyValue: clust.getKeyValuePairs()) {
-			keyValuePairs.add(Json.createObjectBuilder()
-					.add("Key", keyValue.getKey())
-					.add("Value", keyValue.getValue()));
+		for(int i = 0; i < jsonst.size(); i++) {
+			JsonObject jObj = jsonst.getJsonObject(i);
+			
+			String S = jObj.getString("baseUnicodeKey");
+			char baseUnicodeKey = S.charAt(0);	
+			
+			JsonObject keyValueObj = jObj.getJsonObject("keyValuePairs");
+			String Key = keyValueObj.getString("Key");
+			String Value = keyValueObj.getString("Value");
+			
+			clusterObjects[i] = new ClusterObject(baseUnicodeKey, Key, Value);			
+			
 		}
-	
+		
+		Arrays.sort(clusterObjects, ClusterObject.baseUnicodeKeyComparator);
+		
+		char baseKey = Character.MIN_VALUE;
 		
 		
-		jObj.add("baseUnicodeKey", (char) clust.getBaseKeyUnicode());
-		jObj.add("keyValuePairs", keyValuePairs.build());
+		boolean isSameKey  = false;
 		
-		JsonObject cluster = jObj.build();
+		List<ClusterKeyValue> keyValue = new ArrayList<ClusterKeyValue>();
 		
-		System.out.print(cluster);
+		for(ClusterObject c : clusterObjects) {
+			System.out.println(c.getBaseUnicodeKey());			
+			if(LookUpTable.containsKey(c.getBaseUnicodeKey())) {
+				(LookUpTable.get(c.getBaseUnicodeKey())).put(c.getKey(), c.getValue());
+				System.out.println(true);
+			} else {
+				HashMap<String, String> map = new HashMap<String, String>();
+				map.put(c.getKey(), c.getValue());
+				LookUpTable.put(c.getBaseUnicodeKey(), map);							
+			}		
+			//test.setClusterMap(baseKey, keyValue);
+			
+		}
+		
+		
+		
+		for(ClusterObject c : clusterObjects) {
+			//test.printMap(c.getBaseUnicodeKey());
+			System.out.println(LookUpTable.get(c.getBaseUnicodeKey()));
+		}
+		
 	}
 
 }
