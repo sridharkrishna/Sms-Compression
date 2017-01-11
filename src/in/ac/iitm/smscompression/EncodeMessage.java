@@ -36,8 +36,8 @@ public class EncodeMessage {
 	
 	
 	private static String TAMIL_CODE_FILE		= "huff_tamil.json";
-	private static String HINDI_CODE_FILE 		= "/huff_hindi.json";
-	private static String GUJARATI_CODE_FILE	= "/huff_gujarati.json";
+	private static String HINDI_CODE_FILE 		= "huff_hindi.json";
+	private static String GUJARATI_CODE_FILE	= "huff_gujarati.json";
 	
 	//private static String HEXFORMAT	= "0x";
 	
