@@ -24,7 +24,7 @@ package in.ac.iitm.smscompression;
 
 import java.util.ArrayList;
 
-@Deprecated
+
 public class ClusteringData extends UnicodeClassifier{
 
 	private ArrayList<String> strArray = new ArrayList<String>();

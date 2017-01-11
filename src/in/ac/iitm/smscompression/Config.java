@@ -22,7 +22,7 @@ SOFTWARE.
 
 package in.ac.iitm.smscompression;
 
-@Deprecated
+
 public class Config {
 	
 	

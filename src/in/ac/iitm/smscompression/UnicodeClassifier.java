@@ -22,7 +22,6 @@ SOFTWARE.
 
 package in.ac.iitm.smscompression;
 
-@Deprecated
 public class UnicodeClassifier {
 	
 	char[] symbols	 	= null;

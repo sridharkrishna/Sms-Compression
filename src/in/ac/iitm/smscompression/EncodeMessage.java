@@ -1,6 +1,19 @@
 package in.ac.iitm.smscompression;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import in.ac.iitm.smscompression.model.ClusterObject;
 
 public class EncodeMessage {
 	
@@ -22,7 +35,7 @@ public class EncodeMessage {
 	//private byte[] mMessage;//	= new byte[1120];
 	
 	
-	private static String TAMIL_CODE_FILE		= "/huff_tamil.json";
+	private static String TAMIL_CODE_FILE		= "huff_tamil.json";
 	private static String HINDI_CODE_FILE 		= "/huff_hindi.json";
 	private static String GUJARATI_CODE_FILE	= "/huff_gujarati.json";
 	
@@ -30,7 +43,7 @@ public class EncodeMessage {
 	
 	private static int TAMIL		=	1;
 	private static int HINDI		= 	2;
-	private static int GUJARATI		=   3;
+	private static int GUJARATI	=   3;
 	
 	private int encodeLength = 0;
 	
@@ -108,41 +121,80 @@ public class EncodeMessage {
 		return sb.toString();
 	}
 	
-	private String getCode(String strCluster, int flag) {
-		SymbolTable<String, String> st = new SymbolTable<String, String>();
-		int KEY = 0;
-		int VAL = 1;
-		
-		In in = new In(filePath(flag));
-		String[] database = in.readAllLines();		// read huffmancode table
+	private String getCode(String strCluster, int flag) {		
+		try {
+			Map<Character, Map<String, String>> LookUpTable = new HashMap<Character, Map<String, String>>();
+			InputStream fis = new FileInputStream(filePath(flag));
+			JsonReader jsonReader = Json.createReader(fis);
+			JsonArray jsonst = jsonReader.readArray();
+			jsonReader.close();
+			fis.close();
+			ClusterObject[] clusterObjects = new ClusterObject[jsonst.size()];
+			
+			for(int i = 0; i < jsonst.size(); i++) {
+				JsonObject jObj = jsonst.getJsonObject(i);
 				
-		for(int i = 0; i < database.length; i++) {
-			String[] tokens = database[i].split("§");
-			String key = tokens[KEY];
-			String val = tokens[VAL];
-			st.put(key, val);
-		}
-		
-		String str = st.get(strCluster);
-		byte[] msg = new byte[16];
-		int charValue = 0;
-		if(str != null) {
-			return str;
-		} else {
-			StringBuilder sb = new StringBuilder();
-			for(int i = 0; i < strCluster.length(); i++) {
-				charValue = Character.codePointAt(strCluster, i);
-				//System.out.println(charValue);
-				msg = mLengthToBinary(charValue);
-				sb.append(st.get("escape"));
-				for (int j = msg.length - 1; j >= 0; j--) {
-					sb.append(msg[j]);	
-		        }
-				//System.out.println(sb);
+				String S = jObj.getString("baseUnicodeKey");
+				char baseUnicodeKey = S.charAt(0);	
+				
+				JsonObject keyValueObj = jObj.getJsonObject("keyValuePairs");
+				String Key = keyValueObj.getString("Key");
+				String Value = keyValueObj.getString("Value");
+				
+				clusterObjects[i] = new ClusterObject(baseUnicodeKey, Key, Value);			
+				
 			}
-			//System.out.println(sb);
-			return sb.toString();
+			
+			Arrays.sort(clusterObjects, ClusterObject.baseUnicodeKeyComparator);
+			
+			for(ClusterObject c : clusterObjects) {
+				if(LookUpTable.containsKey(c.getBaseUnicodeKey())) {
+					(LookUpTable.get(c.getBaseUnicodeKey())).put(c.getKey(), c.getValue());
+					
+				} else {
+					HashMap<String, String> map = new HashMap<String, String>();
+					map.put(c.getKey(), c.getValue());
+					LookUpTable.put(c.getBaseUnicodeKey(), map);
+				}			
+			}	
+			
+			char c = strCluster.charAt(0);
+			
+			String str = "";
+			
+			if(LookUpTable.containsKey(c)) {
+				HashMap<String, String> table = new HashMap<String, String>();
+				table = (HashMap<String, String>) LookUpTable.get(c);
+				str = table.get(strCluster);
+			}
+			
+			byte[] msg = new byte[16];
+			int charValue = 0;
+			if(str != null) {
+				return str;
+			} else {
+				StringBuilder sb = new StringBuilder();
+				for(int i = 0; i < strCluster.length(); i++) {
+					charValue = Character.codePointAt(strCluster, i);
+					//System.out.println(charValue);
+					msg = mLengthToBinary(charValue);
+					char ch = ("escape").charAt(0);
+					HashMap<String, String> temp = new HashMap<String, String>();
+					temp = (HashMap<String, String>) LookUpTable.get(ch);
+					sb.append(temp.get("escape"));
+					for (int j = msg.length - 1; j >= 0; j--) {
+						sb.append(msg[j]);	
+			        }
+					//System.out.println(sb);
+				}
+				//System.out.println(sb);
+				return sb.toString();
+			}
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		return null;
 	}
 	
 	private static String filePath(int unicodeFlag) {		
