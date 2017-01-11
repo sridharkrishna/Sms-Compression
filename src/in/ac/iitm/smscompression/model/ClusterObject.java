@@ -45,6 +45,7 @@ public class ClusterObject implements Comparable<ClusterObject>{
 	}
 
 	public static Comparator<ClusterObject> baseUnicodeKeyComparator = new Comparator<ClusterObject>() {
+		@Override
 		public int compare(ClusterObject c1, ClusterObject c2) {
 			Character baseUnicode1 = c1.getBaseUnicodeKey();
 			Character baseUnicode2 = c2.getBaseUnicodeKey();

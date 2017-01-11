@@ -22,43 +22,19 @@ SOFTWARE.
 package in.ac.iitm.smscompression;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.stream.Stream;
-
 import javax.json.Json;
 import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonReader;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
-import javax.json.stream.JsonParser;
-import javax.xml.transform.stream.StreamSource;
-
-import org.glassfish.json.JsonProviderImpl;
-import org.jinq.jpa.JinqJPAStreamProvider;
-import org.jinq.jpa.jpqlquery.From;
-import org.jinq.orm.stream.JinqStream;
-
 import in.ac.iitm.smscompression.model.ClusterKeyValue;
 import in.ac.iitm.smscompression.model.ClusterObject;
-import in.ac.iitm.smscompression.model.ClusterTable;
 
 public class Test {
 	
@@ -80,7 +56,6 @@ public class Test {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		System.out.println("Hello Sms Compression.....!");

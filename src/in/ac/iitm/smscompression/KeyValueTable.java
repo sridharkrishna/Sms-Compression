@@ -23,8 +23,6 @@ SOFTWARE.
 
 package in.ac.iitm.smscompression;
 
-import in.ac.iitm.smscompression.model.*;
-
 public class KeyValueTable {
 
 	public void add () {
