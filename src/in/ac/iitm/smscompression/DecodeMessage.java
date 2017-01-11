@@ -1,6 +1,19 @@
 package in.ac.iitm.smscompression;
 
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import in.ac.iitm.smscompression.model.ClusterObject;
 
 public class DecodeMessage {
 
@@ -8,9 +21,9 @@ public class DecodeMessage {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private static String TAMIL_CODE_FILE		= "/huff_tamil.json";
-	private static String HINDI_CODE_FILE 		= "/huff_hindi.json";
-	private static String GUJARATI_CODE_FILE	= "/huff_gujarati.json";
+	private static String TAMIL_CODE_FILE		= "huff_tamil.json";
+	private static String HINDI_CODE_FILE 		= "huff_hindi.json";
+	private static String GUJARATI_CODE_FILE	= "huff_gujarati.json";
 	
 	private SymbolTable<String, String> st = new SymbolTable<String, String>();
 	
@@ -23,38 +36,63 @@ public class DecodeMessage {
 		int VAL = 0;
 		String mHeader = null;
 		
-		/**
-		 * Converting Hex code into binary format
-		 */
-		StringBuilder binary = new StringBuilder();
-		char[] ch = code.toCharArray();
-		for(int i = 0; i < ch.length; i++) {
-			String hex = String.format("%04x", (int)ch[i]);
-			binary.append(hexToBin(hex));
+		try {
+			//Map<String, String> LookUpTable = new HashMap<String, String>();
+			/**
+			 * Converting Hex code into binary format
+			 */
+			StringBuilder binary = new StringBuilder();
+			char[] ch = code.toCharArray();
+			for(int i = 0; i < ch.length; i++) {
+				String hex = String.format("%04x", (int)ch[i]);
+				binary.append(hexToBin(hex));
+			}
+			
+			String strToDecode = binary.toString();
+			//System.out.println(strToDecode);
+			char[] charFromString = strToDecode.toCharArray();
+			
+			// Checking Header
+			StringBuilder hdr = new StringBuilder();
+			for(int i = 0; i < 8; i++) {
+				hdr.append(charFromString[i]);
+			}
+			mHeader = hdr.toString();
+			
+			InputStream fis = new FileInputStream(filePath(mHeader));
+			JsonReader jsonReader = Json.createReader(fis);
+			JsonArray jsonst = jsonReader.readArray();
+			jsonReader.close();
+			fis.close();
+			ClusterObject[] clusterObjects = new ClusterObject[jsonst.size()];
+			
+			for(int i = 0; i < jsonst.size(); i++) {
+				JsonObject jObj = jsonst.getJsonObject(i);
+				
+				String S = jObj.getString("baseUnicodeKey");
+				char baseUnicodeKey = S.charAt(0);	
+				
+				JsonObject keyValueObj = jObj.getJsonObject("keyValuePairs");
+				String Key = keyValueObj.getString("Key");
+				String Value = keyValueObj.getString("Value");
+				
+				clusterObjects[i] = new ClusterObject(baseUnicodeKey, Key, Value);			
+				
+			}
+			
+			Arrays.sort(clusterObjects, ClusterObject.baseUnicodeKeyComparator);
+			
+			for(ClusterObject c : clusterObjects) {
+				st.put(c.getValue(), c.getKey());  // here pass value as key and key as value for
+															// decoding purpose
+			} 
+			
+			return decode(strToDecode);
+		}catch(IOException e) {
+			e.printStackTrace();
 		}
 		
-		String strToDecode = binary.toString();
-		//System.out.println(strToDecode);
-		char[] charFromString = strToDecode.toCharArray();
-		
-		// Checking Header
-		StringBuilder hdr = new StringBuilder();
-		for(int i = 0; i < 8; i++) {
-			hdr.append(charFromString[i]);
-		}
-		mHeader = hdr.toString();
-		
-		In in = new In(filePath(mHeader));	
-		String[] database = in.readAllLines();	
-		
-		for(int i = 0; i < database.length; i++) {
-			String[] tokens = database[i].split("§");
-			String key = tokens[KEY];
-			String val = tokens[VAL];
-			st.put(key, val);
-		}
-		
-		return decode(strToDecode);
+		return null;
 	}
 	
 	
