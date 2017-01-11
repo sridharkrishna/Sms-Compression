@@ -131,22 +131,14 @@ public class Test {
 			if(LookUpTable.containsKey(c.getBaseUnicodeKey())) {
 				(LookUpTable.get(c.getBaseUnicodeKey())).put(c.getKey(), c.getValue());
 				System.out.println(true);
+				System.out.println(LookUpTable.get(c.getBaseUnicodeKey()));
 			} else {
 				HashMap<String, String> map = new HashMap<String, String>();
 				map.put(c.getKey(), c.getValue());
-				LookUpTable.put(c.getBaseUnicodeKey(), map);							
-			}		
-			//test.setClusterMap(baseKey, keyValue);
-			
-		}
-		
-		
-		
-		for(ClusterObject c : clusterObjects) {
-			//test.printMap(c.getBaseUnicodeKey());
-			System.out.println(LookUpTable.get(c.getBaseUnicodeKey()));
-		}
-		
+				LookUpTable.put(c.getBaseUnicodeKey(), map);
+				System.out.println(LookUpTable.get(c.getBaseUnicodeKey()));
+			}			
+		}		
 	}
 
 }
