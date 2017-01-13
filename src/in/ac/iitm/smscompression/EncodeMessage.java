@@ -35,7 +35,7 @@ public class EncodeMessage {
 	//private byte[] mMessage;//	= new byte[1120];
 	
 	
-	private static String TAMIL_CODE_FILE		= "huff_tamil.json";
+	private String TAMIL_CODE_FILE		= "huff_tamil.json";
 	private static String HINDI_CODE_FILE 		= "huff_hindi.json";
 	private static String GUJARATI_CODE_FILE	= "huff_gujarati.json";
 	
@@ -159,37 +159,63 @@ public class EncodeMessage {
 			}	
 			
 			char c = strCluster.charAt(0);
-			
+			//System.out.println(strCluster);
+			//System.out.println(c +" " +strCluster);
 			String str = "";
 			
 			if(LookUpTable.containsKey(c)) {
 				HashMap<String, String> table = new HashMap<String, String>();
 				table = (HashMap<String, String>) LookUpTable.get(c);
 				str = table.get(strCluster);
-			}
-			
-			byte[] msg = new byte[16];
-			int charValue = 0;
-			if(str != null) {
-				return str;
-			} else {
+				
+				byte[] msg = new byte[16];
+				int charValue = 0;
+				//System.out.println(str);
+				if(str != null) {
+					return str;
+				} else {
+					StringBuilder sb = new StringBuilder();
+					for(int i = 0; i < strCluster.length(); i++) {
+						charValue = Character.codePointAt(strCluster, i);
+						//System.out.println(charValue);
+						msg = mLengthToBinary(charValue);
+						char ch = ("escape").charAt(0);
+						HashMap<String, String> temp = new HashMap<String, String>();
+						temp = (HashMap<String, String>) LookUpTable.get(ch);
+						//System.out.println("@escape" + temp.get("escape"));
+						sb.append(temp.get("escape"));
+						for (int j = msg.length - 1; j >= 0; j--) {
+							sb.append(msg[j]);	
+				        }
+						//System.out.println(sb);
+					}
+					//System.out.println(sb);
+					return sb.toString();
+				}
+				
+			}else {
+				byte[] msgs = new byte[16];
+				int charVal = 0;
 				StringBuilder sb = new StringBuilder();
 				for(int i = 0; i < strCluster.length(); i++) {
-					charValue = Character.codePointAt(strCluster, i);
+					charVal = Character.codePointAt(strCluster, i);
 					//System.out.println(charValue);
-					msg = mLengthToBinary(charValue);
+					msgs = mLengthToBinary(charVal);
 					char ch = ("escape").charAt(0);
 					HashMap<String, String> temp = new HashMap<String, String>();
 					temp = (HashMap<String, String>) LookUpTable.get(ch);
+					//System.out.println("@escape" + temp.get("escape"));
 					sb.append(temp.get("escape"));
-					for (int j = msg.length - 1; j >= 0; j--) {
-						sb.append(msg[j]);	
+					for (int j = msgs.length - 1; j >= 0; j--) {
+						sb.append(msgs[j]);	
 			        }
 					//System.out.println(sb);
 				}
 				//System.out.println(sb);
 				return sb.toString();
 			}
+			
+
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -197,7 +223,7 @@ public class EncodeMessage {
 		return null;
 	}
 	
-	private static String filePath(int unicodeFlag) {		
+	private String filePath(int unicodeFlag) {		
 		if(unicodeFlag == 0) {
 			return TAMIL_CODE_FILE;
 		} else if(unicodeFlag == 1) {

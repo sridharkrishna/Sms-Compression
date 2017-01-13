@@ -25,7 +25,7 @@ public class Test {
 	
 	public static void main(String[] args) {
 		Wrapper wrap = new Wrapper();
-		String msg = "உதவி தமிழ் விக்கிமீடியா திட்டங்கள்";
+		String msg = "xyz அரசியல் கட்சிகளின் நன்கொடைக்கு வருமான வரிவிலக்கு அளிப்பதற்கு எதிரான வழக்கை சுப்ரீம் கோர்ட்டு தள்ளுபடி செய்தது.";
 		
 		System.out.println("Oringinal SMS: " + msg);
 		
@@ -35,6 +35,9 @@ public class Test {
 		System.out.println("Encoded SMS: " + encodedMsg);
 		
 		System.out.println();	
+		
+		String decodedMsg = wrap.decodeString(Wrapper.mMessage);
+		System.out.println("Decoded SMS: " + decodedMsg);
 
 	}
 

@@ -21,7 +21,7 @@ public class DecodeMessage {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private static String TAMIL_CODE_FILE		= "huff_tamil.json";
+	private String TAMIL_CODE_FILE		= "huff_tamil.json";
 	private static String HINDI_CODE_FILE 		= "huff_hindi.json";
 	private static String GUJARATI_CODE_FILE	= "huff_gujarati.json";
 	
@@ -149,7 +149,7 @@ public class DecodeMessage {
 		return mString.toString();
 	}
 	
-	private static String filePath(String header) {
+	private String filePath(String header) {
 		int hdr = Integer.parseInt(header, 2);
 		
 		if(hdr == 1) {
